@@ -4,6 +4,8 @@ on: push
 jobs:
   get-push-date:
     runs-on: ubuntu-latest
+    outputs:
+      isPushed: ${{ steps.git-check.outputs.pushed}}
     steps:
       - uses: actions/checkout@v2
       - name: Fetch latest push
@@ -14,12 +16,10 @@ jobs:
       - name: Check if new push
         id: git-check
         if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
-        run: truncate -s 0 filecoin-lotus-latest-push-date.txt && echo ${{steps.filecoin-lotus.outputs.push_tag}} >> filecoin-lotus-latest-push-date.txt && cat filecoin-lotus-latest-push-date.txt;
+        run: echo "::set-output name=pushed::true" && truncate -s 0 filecoin-lotus-latest-push-date.txt && echo ${{steps.filecoin-lotus.outputs.push_tag}} >> filecoin-lotus-latest-push-date.txt && cat filecoin-lotus-latest-push-date.txt;
 
   new-job:
     needs: [get-push-date]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: test
-        run: echo ${{steps.git-check.if}}
+      - run: echo ${{needs.get-push-date.outputs.isPushed}}
