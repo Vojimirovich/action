@@ -21,5 +21,6 @@ jobs:
   new-job:
     needs: [get-push-date]
     runs-on: ubuntu-latest
+    if: ${{needs.get-push-date.outputs.isPushed}} == 'true'
     steps:
-      - run: echo ${{needs.get-push-date.outputs.isPushed}}
+      - run: echo "radim"
