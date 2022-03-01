@@ -17,6 +17,7 @@ jobs:
         run: truncate -s 0 filecoin-lotus-latest-push-date.txt && echo ${{steps.filecoin-lotus.outputs.push_tag}} >> filecoin-lotus-latest-push-date.txt && cat filecoin-lotus-latest-push-date.txt;
 
   new-job:
+    needs: [get-push-date]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
