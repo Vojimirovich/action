@@ -15,9 +15,11 @@ jobs:
         id: git-check
         if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
         run: truncate -s 0 filecoin-lotus-latest-push-date.txt && echo ${{steps.filecoin-lotus.outputs.push_tag}} >> filecoin-lotus-latest-push-date.txt && cat filecoin-lotus-latest-push-date.txt;
-  jobs.get-push-date.if:
-    other-big-job:
+    
+  new-job: 
+    runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@v2
+
         - name: test
-          run: echo "sve je ok"
+        - uses: actions/checkout@v2
+          run: echo "testing"
