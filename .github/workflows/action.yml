@@ -22,4 +22,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: test
-        run: echo ${{steps.git-check}}
+        run: echo ${{steps.git-check.if}}
