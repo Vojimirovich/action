@@ -20,6 +20,6 @@ jobs:
     runs-on: ubuntu-latest
       steps:
 
-        - name: test
         - uses: actions/checkout@v2
+        - name: test
           run: echo "testing"
