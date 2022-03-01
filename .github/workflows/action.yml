@@ -1,0 +1,17 @@
+name: Get latest push on lotus repo
+on: push
+
+jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch latest push
+        id: filecoin-lotus
+        run: |
+          echo ::set-output name=push_tag::$(curl -sL https://api.github.com/repos/Vojimirovich/action-target | jq -r ".pushed_at")
+          echo ::set-output name=current_tag::$(cat ./filecoin-lotus-latest-push-date.txt)
+      - name: Check if new push
+        id: git-check
+        if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
+        run: echo ${{steps.filecoin-lotus.outputs.push_tag}} and ${{steps.filecoin-lotus.outputs.current_tag}}
