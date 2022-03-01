@@ -1,7 +1,7 @@
 name: Get latest push on lotus repo
 on:
   schedule:
-    - cron: "* * * * *"
+    - cron: "1/5 * * * *"
 
 jobs:
   get-push-date:
