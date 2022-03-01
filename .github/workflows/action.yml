@@ -2,7 +2,7 @@ name: Get latest push on lotus repo
 on: push
 
 jobs:
-  get-version:
+  get-push-date:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -15,3 +15,9 @@ jobs:
         id: git-check
         if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
         run: truncate -s 0 filecoin-lotus-latest-push-date.txt && echo ${{steps.filecoin-lotus.outputs.push_tag}} >> filecoin-lotus-latest-push-date.txt && cat filecoin-lotus-latest-push-date.txt;
+  jobs.get-push-date.if:
+    other-big-job:
+      steps:
+        - uses: actions/checkout@v2
+        - name: test
+          run: echo "sve je ok"
