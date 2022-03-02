@@ -10,6 +10,10 @@ jobs:
     outputs:
       isPushed: ${{ steps.git-check.outputs.pushed}}
     steps:
+      # Checkout the repository.
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
       - name: Fetch latest push
         id: filecoin-lotus
         run: |
@@ -20,15 +24,6 @@ jobs:
         if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
         run: echo "::set-output name=pushed::true" && truncate -s 0 filecoin-lotus-latest-push-date.txt && echo ${{steps.filecoin-lotus.outputs.push_tag}} >> filecoin-lotus-latest-push-date.txt && cat filecoin-lotus-latest-push-date.txt;
 
-  run-test-crawler:
-    needs: [get-push-date]
-    runs-on: ubuntu-latest
-    if: needs.get-push-date.outputs.isPushed == 'true'
-    steps:
-      # Checkout the repository.
-      - name: Checkout the repository
-        uses: actions/checkout@v2
-
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
@@ -36,4 +31,24 @@ jobs:
           branch: chore/generate-tests
           commit-message: Update tests.json
           title: "chore(test-crawler): Update tests.json"
-          # delete-branch: true
+          delete-branch: true
+
+  run-test-crawler:
+    needs: [get-push-date]
+    runs-on: ubuntu-latest
+    if: needs.get-push-date.outputs.isPushed == 'true'
+    steps:
+      - name: Check
+      - run: echo "radim"
+      # # Checkout the repository.
+      # - name: Checkout the repository
+      #   uses: actions/checkout@v2
+
+      # - name: Create Pull Request
+      #   uses: peter-evans/create-pull-request@v3
+      #   with:
+      #     base: main
+      #     branch: chore/generate-tests
+      #     commit-message: Update tests.json
+      #     title: "chore(test-crawler): Update tests.json"
+      #     # delete-branch: true
