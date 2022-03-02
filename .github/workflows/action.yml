@@ -36,4 +36,4 @@ jobs:
           branch: chore/generate-tests
           commit-message: Update tests.json
           title: "chore(test-crawler): Update tests.json"
-          delete-branch: true
+          # delete-branch: true
