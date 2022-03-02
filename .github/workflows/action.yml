@@ -1,7 +1,8 @@
 name: Get latest push on lotus repo
 on:
-  schedule:
-    - cron: "* 3 * * *"
+  push
+  # schedule:
+  #   - cron: "0 6,12,18,23 * * *"
 
 jobs:
   get-push-date:
@@ -9,7 +10,6 @@ jobs:
     outputs:
       isPushed: ${{ steps.git-check.outputs.pushed}}
     steps:
-      - uses: actions/checkout@v2
       - name: Fetch latest push
         id: filecoin-lotus
         run: |
@@ -20,7 +20,7 @@ jobs:
         if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
         run: echo "::set-output name=pushed::true" && truncate -s 0 filecoin-lotus-latest-push-date.txt && echo ${{steps.filecoin-lotus.outputs.push_tag}} >> filecoin-lotus-latest-push-date.txt && cat filecoin-lotus-latest-push-date.txt;
 
-  new-job:
+  run-test-crawler:
     needs: [get-push-date]
     runs-on: ubuntu-latest
     if: needs.get-push-date.outputs.isPushed == 'true'
