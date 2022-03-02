@@ -14,11 +14,23 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
 
+      - name: Store file in cache
+        id: cachedFile
+        uses: actions/cache@v2
+        with:
+          path: filecoin-lotus-latest-push-date.txt
+          key: ${{ runner.os }}-latest-push-date
+
+      - name: Create last push file if not cached
+        if: steps.cachedFile.outputs.cache-hit != 'true'
+        run: mkdir filecoin-lotus-latest-push-date.txt && echo "initialDate" >> filecoin-lotus-latest-push-date.txt
+
       - name: Fetch latest push
         id: filecoin-lotus
         run: |
           echo ::set-output name=push_tag::$(curl -sL https://api.github.com/repos/Vojimirovich/action-target | jq -r ".pushed_at")
           echo ::set-output name=current_tag::$(cat ./filecoin-lotus-latest-push-date.txt)
+
       - name: Check if new push
         id: git-check
         if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
