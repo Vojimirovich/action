@@ -23,7 +23,7 @@ jobs:
 
       - name: Create last push file if not cached
         if: steps.cachedFile.outputs.cache-hit != 'true'
-        run: mkdir filecoin-lotus-latest-push-date.txt && echo "initialDate" >> filecoin-lotus-latest-push-date.txt
+        run: echo "initialDate" >> filecoin-lotus-latest-push-date.txt
 
       - name: Fetch latest push
         id: filecoin-lotus
