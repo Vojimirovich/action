@@ -19,7 +19,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: filecoin-lotus-latest-push-date.txt
-          key: ${{ runner.os }}-latest-push-date
+          key: ${{ runner.os }}-latest-push-date-${{ hashFiles('filecoin-lotus-latest-push-date.txt') }}
 
       - name: Create last push file if not cached
         if: steps.cachedFile.outputs.cache-hit != 'true'
