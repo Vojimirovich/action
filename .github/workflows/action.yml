@@ -45,4 +45,4 @@ jobs:
     if: needs.get-push-date.outputs.isPushed == 'true'
     steps:
       - name: Check
-        run: echo "doooo" && cat filecoin-lotus-latest-push-date.txt
+        run: echo "doooo"
