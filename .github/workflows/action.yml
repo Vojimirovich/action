@@ -14,6 +14,9 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
 
+      - name: does file exist
+        run: cat filecoin-lotus-latest-push-date.txt
+
       - name: Store file in cache
         id: cachedFile
         uses: actions/cache@v2
@@ -29,7 +32,7 @@ jobs:
         id: filecoin-lotus
         run: |
           echo ::set-output name=push_tag::$(curl -sL https://api.github.com/repos/Vojimirovich/action-target | jq -r ".pushed_at")
-          echo ::set-output name=current_tag::$(cat ./filecoin-lotus-latest-push-date.txt)
+          echo ::set-output name=current_tag::$(cat filecoin-lotus-latest-push-date.txt)
 
       - name: Check tags
         run: echo ${{steps.filecoin-lotus.outputs.current_tag}} and ${{steps.filecoin-lotus.outputs.push_tag}}
