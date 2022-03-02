@@ -36,10 +36,12 @@ jobs:
         if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
         run: echo "::set-output name=pushed::true" && truncate -s 0 filecoin-lotus-latest-push-date.txt && echo ${{steps.filecoin-lotus.outputs.push_tag}} >> filecoin-lotus-latest-push-date.txt && cat filecoin-lotus-latest-push-date.txt;
 
+      - name: Check file
+        run: cat filecoin-lotus-latest-push-date.txt
   run-test-crawler:
     needs: [get-push-date]
     runs-on: ubuntu-latest
     if: needs.get-push-date.outputs.isPushed == 'true'
     steps:
       - name: Check
-        run: cat filecoin-lotus-latest-push-date.txt
+        run: echo "doooo"
