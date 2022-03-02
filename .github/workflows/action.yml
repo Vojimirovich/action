@@ -39,7 +39,7 @@ jobs:
     if: needs.get-push-date.outputs.isPushed == 'true'
     steps:
       - name: Check
-      - run: echo "radim"
+        run: echo "radim"
       # # Checkout the repository.
       # - name: Checkout the repository
       #   uses: actions/checkout@v2
