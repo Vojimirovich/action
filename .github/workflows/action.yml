@@ -21,9 +21,6 @@ jobs:
           path: filecoin-lotus-latest-push-date.txt
           key: ${{ runner.os }}-latest-push-date
 
-      - name: does file exist
-        run: cat filecoin-lotus-latest-push-date.txt
-
       - name: Create last push file if not cached
         if: steps.cachedFile.outputs.cache-hit != 'true'
         run: echo "initialDate" >> filecoin-lotus-latest-push-date.txt
@@ -48,4 +45,4 @@ jobs:
     if: needs.get-push-date.outputs.isPushed == 'true'
     steps:
       - name: Check
-        run: echo "doooo"
+        run: echo "doooo" && cat filecoin-lotus-latest-push-date.txt
