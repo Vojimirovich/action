@@ -15,7 +15,6 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Store/Restore file in cache
-        if: steps.updateCachedFile.outputs.cache-hit != 'true'
         id: cachedFile
         uses: actions/cache@v2
         with:
@@ -41,11 +40,12 @@ jobs:
         run: echo "::set-output name=pushed::true" && truncate -s 0 filecoin-lotus-latest-push-date.txt && echo ${{steps.filecoin-lotus.outputs.push_tag}} >> filecoin-lotus-latest-push-date.txt && cat filecoin-lotus-latest-push-date.txt;
 
       - name: Store file in cache
+        if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
         id: updateCachedFile
         uses: actions/cache@v2
         with:
           path: filecoin-lotus-latest-push-date.txt
-          key: ${{ runner.os }}-latest-push-date-${{ hashFiles('filecoin-lotus-latest-push-date.txt') }}
+          key: ${{ runner.os }}-latest-push-date-${{steps.filecoin-lotus.outputs.push_tag}}
 
       - name: check version
         run: cat filecoin-lotus-latest-push-date.txt
