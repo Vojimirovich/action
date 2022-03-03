@@ -23,7 +23,7 @@ jobs:
       - name: Download a single artifact
         uses: actions/download-artifact@v2
         id: downloadFile
-
+        continue-on-error: true
         with:
           name: my-artifact
 
