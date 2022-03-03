@@ -14,15 +14,22 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
 
-      - name: Store/Restore file in cache
-        id: cachedFile
-        uses: actions/cache@v2
+      # - name: Store/Restore file in cache
+      #   id: cachedFile
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: filecoin-lotus-latest-push-date.txt
+      #     key: ${{ runner.os }}-latest-push-date-${{ hashFiles('filecoin-lotus-latest-push-date.txt') }}
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        id: downloadFile
+
         with:
-          path: filecoin-lotus-latest-push-date.txt
-          key: ${{ runner.os }}-latest-push-date-${{ hashFiles('filecoin-lotus-latest-push-date.txt') }}
+          name: my-artifact
 
       - name: Create last push file if not cached
-        if: steps.cachedFile.outputs.cache-hit != 'true'
+        id: createFile
+        if: steps.downloadFile.outcome != 'success'
         run: echo "initialDate" >> filecoin-lotus-latest-push-date.txt
 
       - name: Fetch latest push
@@ -39,13 +46,23 @@ jobs:
         if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
         run: echo "::set-output name=pushed::true" && truncate -s 0 filecoin-lotus-latest-push-date.txt && echo ${{steps.filecoin-lotus.outputs.push_tag}} >> filecoin-lotus-latest-push-date.txt && cat filecoin-lotus-latest-push-date.txt;
 
-      - name: Store file in cache
-        if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
-        id: updateCachedFile
-        uses: actions/cache@v2
+      - name: check version
+        run: cat filecoin-lotus-latest-push-date.txt
+
+      - name: "Upload Artifact"
+        if: steps.createFile.outcome == 'success'
+        uses: actions/upload-artifact@v2
+        id: uploadFile
         with:
+          name: my-artifact
           path: filecoin-lotus-latest-push-date.txt
-          key: ${{ runner.os }}-latest-push-date-${{steps.filecoin-lotus.outputs.push_tag}}
+      # - name: Store file in cache
+      #   if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
+      #   id: updateCachedFile
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: filecoin-lotus-latest-push-date.txt
+      #     key: ${{ runner.os }}-latest-push-date-${{steps.filecoin-lotus.outputs.push_tag}}
 
       - name: check version
         run: cat filecoin-lotus-latest-push-date.txt
