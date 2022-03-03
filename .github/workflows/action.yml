@@ -44,7 +44,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: filecoin-lotus-latest-push-date.txt
-          key: ${{ runner.os }}-latest-push-date-${{ hashFiles(${{steps.filecoin-lotus.outputs.push_tag}}) }}
+          key: ${{ runner.os }}-latest-push-date-${{ hashFiles(cat filecoin-lotus-latest-push-date.txt) }}
 
       - name: check version
         run: cat filecoin-lotus-latest-push-date.txt
