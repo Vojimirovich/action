@@ -14,13 +14,6 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
 
-      - name: Store file in cache
-        id: cachedFile
-        uses: actions/cache@v2
-        with:
-          path: filecoin-lotus-latest-push-date.txt
-          key: ${{ runner.os }}-latest-push-date-${{ hashFiles('filecoin-lotus-latest-push-date.txt') }}
-
       - name: Create last push file if not cached
         if: steps.cachedFile.outputs.cache-hit != 'true'
         run: echo "initialDate" >> filecoin-lotus-latest-push-date.txt
@@ -38,6 +31,13 @@ jobs:
         id: git-check
         if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
         run: echo "::set-output name=pushed::true" && truncate -s 0 filecoin-lotus-latest-push-date.txt && echo ${{steps.filecoin-lotus.outputs.push_tag}} >> filecoin-lotus-latest-push-date.txt && cat filecoin-lotus-latest-push-date.txt;
+
+      - name: Store file in cache
+        id: cachedFile
+        uses: actions/cache@v2
+        with:
+          path: filecoin-lotus-latest-push-date.txt
+          key: ${{ runner.os }}-latest-push-date-${{ hashFiles('filecoin-lotus-latest-push-date.txt') }}
 
   run-test-crawler:
     needs: [get-push-date]
