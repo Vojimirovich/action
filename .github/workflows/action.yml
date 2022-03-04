@@ -20,10 +20,11 @@ jobs:
         with:
           path: filecoin-lotus-latest-push-date.txt
           key: ${{ runner.os }}-latest-push-date-${{ hashFiles('filecoin-lotus-latest-push-date.txt') }}
+          restore-keys: ${{ runner.os }}-latest-push-date
 
       - name: Create last push file if not cached
         id: createFile
-        if: steps.cachedFile.cache-hit != 'true'
+        if: steps.cachedFile.outputs.cache-hit != 'true'
         run: echo "initialDate" >> filecoin-lotus-latest-push-date.txt
 
       - name: Fetch latest push
