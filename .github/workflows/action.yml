@@ -28,7 +28,7 @@ jobs:
           name: my-artifact
 
       - name: IF file
-        run: "(test -f filecoin-lotus-latest-push-date && echo README exists) || echo README does not exist, skipping step"
+        run: "(test -f filecoin-lotus-latest-push-date && echo README exists) || echo filecoin-lotus-latest-push-date.txt does not exist, skipping step"
 
       - name: Create last push file if not cached
         id: createFile
@@ -74,5 +74,12 @@ jobs:
     runs-on: ubuntu-latest
     if: needs.get-push-date.outputs.isPushed == 'true'
     steps:
-      - name: Check
-        run: echo "doooo"
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        id: downloadFile
+        continue-on-error: true
+        with:
+          name: my-artifact
+
+      - name: File content
+        run: cat filecoin-lotus-latest-push-date.txt
