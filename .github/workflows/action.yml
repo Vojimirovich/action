@@ -47,6 +47,7 @@ jobs:
         id: get-date
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+          echo ${{steps.get-date.date}}
         shell: bash
 
   run-test-crawler:
@@ -55,4 +56,4 @@ jobs:
     if: needs.get-push-date.outputs.isPushed == 'true'
     steps:
       - name: Check file
-        run: cat filecoin-lotus-latest-push-date.txt
+        run: echo ${{steps.get-date.date}}
