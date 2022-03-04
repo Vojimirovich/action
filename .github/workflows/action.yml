@@ -5,80 +5,54 @@ on:
   #   - cron: "0 6,12,18,23 * * *"
 
 jobs:
-  #   get-push-date:
-  #     runs-on: ubuntu-latest
-  #     outputs:
-  #       isPushed: ${{ steps.git-check.outputs.pushed}}
-  #     steps:
-  #       # Checkout the repository.
-  #       - name: Checkout the repository
-  #         uses: actions/checkout@v2
-
-  #       # - name: Store/Restore file in cache
-  #       #   id: cachedFile
-  #       #   uses: actions/cache@v2
-  #       #   with:
-  #       #     path: filecoin-lotus-latest-push-date.txt
-  #       #     key: ${{ runner.os }}-latest-push-date-${{ hashFiles('filecoin-lotus-latest-push-date.txt') }}
-  #       - name: Download a single artifact
-  #         uses: actions/download-artifact@v2
-  #         id: downloadFile
-  #         continue-on-error: true
-  #         with:
-  #           name: my-artifact
-
-  #       - name: IF file
-  #         run: "(test -f filecoin-lotus-latest-push-date && echo README exists) || echo filecoin-lotus-latest-push-date.txt does not exist, skipping step"
-
-  #       - name: Create last push file if not cached
-  #         id: createFile
-  #         if: steps.downloadFile.outcome != 'success'
-  #         run: echo "initialDate" >> filecoin-lotus-latest-push-date.txt
-
-  #       - name: Fetch latest push
-  #         id: filecoin-lotus
-  #         run: |
-  #           echo ::set-output name=push_tag::$(curl -sL https://api.github.com/repos/Vojimirovich/action-target | jq -r ".pushed_at")
-  #           echo ::set-output name=current_tag::$(cat filecoin-lotus-latest-push-date.txt)
-
-  #       - name: Check tags
-  #         run: echo ${{steps.filecoin-lotus.outputs.current_tag}} and ${{steps.filecoin-lotus.outputs.push_tag}}
-
-  #       - name: Check if new push
-  #         id: git-check
-  #         if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
-  #         run: echo "::set-output name=pushed::true" && truncate -s 0 filecoin-lotus-latest-push-date.txt && echo ${{steps.filecoin-lotus.outputs.push_tag}} >> filecoin-lotus-latest-push-date.txt && cat filecoin-lotus-latest-push-date.txt;
-
-  #       - name: check version
-  #         run: cat filecoin-lotus-latest-push-date.txt
-
-  #       - name: "Upload Artifact"
-  #         if: steps.createFile.outcome == 'success'
-  #         uses: actions/upload-artifact@v2
-  #         id: uploadFile
-  #         with:
-  #           name: my-artifact
-  #           path: filecoin-lotus-latest-push-date.txt
-  # - name: Store file in cache
-  #   if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
-  #   id: updateCachedFile
-  #   uses: actions/cache@v2
-  #   with:
-  #     path: filecoin-lotus-latest-push-date.txt
-  #     key: ${{ runner.os }}-latest-push-date-${{steps.filecoin-lotus.outputs.push_tag}}
-
-  # - name: check version
-  #   run: cat filecoin-lotus-latest-push-date.txt
-  run-test-crawler:
-    # needs: [get-push-date]
+  get-push-date:
     runs-on: ubuntu-latest
-    # if: needs.get-push-date.outputs.isPushed == 'true'
+    outputs:
+      isPushed: ${{ steps.git-check.outputs.pushed}}
     steps:
-      - name: Download a single artifact
-        uses: actions/download-artifact@v2
-        id: downloadFile
-        with:
-          name: my-artifact
+      # Checkout the repository.
+      - name: Checkout the repository
+        uses: actions/checkout@v2
 
-      - name: File content
+      - name: Store/Restore file in cache
+        id: cachedFile
+        uses: actions/cache@v2
+        with:
+          path: filecoin-lotus-latest-push-date.txt
+          key: ${{ runner.os }}-latest-push-date-${{ hashFiles('filecoin-lotus-latest-push-date.txt') }}
+
+      - name: Create last push file if not cached
+        id: createFile
+        if: steps.cachedFile.cache-hit != 'true'
+        run: echo "initialDate" >> filecoin-lotus-latest-push-date.txt
+
+      - name: Fetch latest push
+        id: filecoin-lotus
+        run: |
+          echo ::set-output name=push_tag::$(curl -sL https://api.github.com/repos/Vojimirovich/action-target | jq -r ".pushed_at")
+          echo ::set-output name=current_tag::$(cat filecoin-lotus-latest-push-date.txt)
+
+      - name: Check tags
+        run: echo ${{steps.filecoin-lotus.outputs.current_tag}} and ${{steps.filecoin-lotus.outputs.push_tag}}
+
+      - name: Check if new push
+        id: git-check
+        if: steps.filecoin-lotus.outputs.current_tag != steps.filecoin-lotus.outputs.push_tag
+        run: echo "::set-output name=pushed::true" && truncate -s 0 filecoin-lotus-latest-push-date.txt && echo ${{steps.filecoin-lotus.outputs.push_tag}} >> filecoin-lotus-latest-push-date.txt && cat filecoin-lotus-latest-push-date.txt;
+
+      - name: check version
+        run: cat filecoin-lotus-latest-push-date.txt
+
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+        shell: bash
+
+  run-test-crawler:
+    needs: [get-push-date]
+    runs-on: ubuntu-latest
+    if: needs.get-push-date.outputs.isPushed == 'true'
+    steps:
+      - name: Check file
         run: cat filecoin-lotus-latest-push-date.txt
