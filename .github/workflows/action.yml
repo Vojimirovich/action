@@ -28,9 +28,7 @@ jobs:
           name: my-artifact
 
       - name: IF file
-        stat:
-          path: filecoin-lotus-latest-push-date.txt
-        register: date_result
+        run: "(test -f filecoin-lotus-latest-push-date && echo README exists) || echo README does not exist, skipping step"
 
       - name: Create last push file if not cached
         id: createFile
