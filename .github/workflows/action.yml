@@ -28,8 +28,9 @@ jobs:
           name: my-artifact
 
       - name: IF file
-        if: filecoin-lotus-latest-push-date.txt == 'true'
-        run: echo "i exist"
+        stat:
+          path: filecoin-lotus-latest-push-date.txt
+        register: date_result
 
       - name: Create last push file if not cached
         id: createFile
