@@ -27,6 +27,10 @@ jobs:
         with:
           name: my-artifact
 
+      - name: IF file
+        if: filecoin-lotus-latest-push-date.txt
+        run: echo "i exist"
+
       - name: Create last push file if not cached
         id: createFile
         if: steps.downloadFile.outcome != 'success'
