@@ -14,13 +14,19 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
 
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+          shell: bash
+
       - name: Store/Restore file in cache
         id: cachedFile
         uses: actions/cache@v2
         with:
           path: filecoin-lotus-latest-push-date.txt
-          key: ${{ runner.os }}-latest-push-date-${{ hashFiles('filecoin-lotus-latest-push-date.txt') }}
-          restore-keys: ${{ runner.os }}-latest-push-date
+          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('filecoin-lotus-latest-push-date.txt') }}
+          # restore-keys: ${{ runner.os }}-latest-push-date
 
       - name: Create last push file if not cached
         id: createFile
