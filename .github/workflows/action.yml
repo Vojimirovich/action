@@ -23,7 +23,10 @@ jobs:
         uses: actions/cache@v2
         with:
           path: filecoin-lotus-latest-push-date.txt
-          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('filecoin-lotus-latest-push-date.txt') }}
+          key: ${{ runner.os }}-lotus-date-${{ steps.get-date.outputs.date }}
+          restore-keys: |
+            ${{ runner.os }}-lotus-date
+            ${{ runner.os }}-
 
       - name: Read date
         run: echo ${{ steps.get-date.outputs.date }}
