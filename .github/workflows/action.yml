@@ -52,12 +52,5 @@ jobs:
     runs-on: ubuntu-latest
     if: needs.get-push-date.outputs.isPushed == 'true'
     steps:
-      - name: Store/Restore file in cache
-        uses: actions/cache@v2
-        with:
-          path: filecoin-lotus-latest-push-date.txt
-          key: ${{ runner.os }}-latest-push-date-${{ hashFiles('filecoin-lotus-latest-push-date.txt') }}
-          restore-keys: ${{ runner.os }}-latest-push-date
-
       - name: Check file
         run: cat filecoin-lotus-latest-push-date.txt
