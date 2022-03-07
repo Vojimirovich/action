@@ -24,7 +24,6 @@ jobs:
         with:
           path: filecoin-lotus-latest-push-date.txt
           key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('filecoin-lotus-latest-push-date.txt') }}
-          # restore-keys: ${{ runner.os }}-latest-push-date
 
       - name: Create last push file if not cached
         id: createFile
