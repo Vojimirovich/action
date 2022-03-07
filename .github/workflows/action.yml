@@ -29,7 +29,9 @@ jobs:
             ${{ runner.os }}-
 
       - name: Read date
-        run: echo ${{ steps.get-date.outputs.date }}
+        run: |
+          echo ${{ steps.get-date.outputs.date }}
+          cat filecoin-lotus-latest-push-date.txt
 
       - name: Create last push file if not cached
         id: createFile
