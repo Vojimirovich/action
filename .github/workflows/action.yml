@@ -16,7 +16,7 @@ jobs:
 
       - name: Get Date
         id: get-date
-        run: echo "::set-output name=date::$(date "+%Y%m%d%s")"
+        run: echo "::set-output name=date::$(date "+%s")"
 
       - name: Store/Restore file in cache
         id: cachedFile
