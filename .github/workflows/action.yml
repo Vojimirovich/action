@@ -34,7 +34,7 @@ jobs:
           cat filecoin-lotus-latest-push-date.txt
 
       - name: Create last push file if not cached
-        if: hashFiles('filecoin-lotus-latest-push-date.txt') != ''
+        if: hashFiles('filecoin-lotus-latest-push-date.txt') == ''
         run: echo "initialDate" >> filecoin-lotus-latest-push-date.txt
 
       - name: Fetch latest push
